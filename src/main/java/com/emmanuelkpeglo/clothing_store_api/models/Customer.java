@@ -1,4 +1,4 @@
-package models;
+package com.emmanuelkpeglo.clothing_store_api.models;
 
 import lombok.*;
 
@@ -16,10 +16,9 @@ import java.util.List;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "customerId", nullable = false)
-    private Long customerId;
+    private Long id;
 
-    private String Name;
+    private String name;
     private String address;
     private String city;
     private String postalCode;

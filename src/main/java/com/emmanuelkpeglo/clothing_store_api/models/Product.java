@@ -1,4 +1,4 @@
-package models;
+package com.emmanuelkpeglo.clothing_store_api.models;
 
 import lombok.*;
 
@@ -16,8 +16,7 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "productId", nullable = false)
-    private Long productId;
+    private Long id;
 
     private String name;
     private String unit;

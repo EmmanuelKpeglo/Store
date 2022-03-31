@@ -1,4 +1,4 @@
-package models;
+package com.emmanuelkpeglo.clothing_store_api.models;
 
 import lombok.*;
 
@@ -13,20 +13,19 @@ import java.util.List;
 @ToString
 
 @Entity
-@Table(name = "order")
+@Table(name = "_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "orderId", nullable = false)
-    private Long orderId;
+    private Long id;
     private LocalDateTime date;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="customerId", referencedColumnName = "customerId")
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="shipperId", referencedColumnName = "shipperId")
+    @JoinColumn(name = "shipper_id", referencedColumnName = "id")
     private Shipper shipper;
 
     @OneToMany(mappedBy = "order")

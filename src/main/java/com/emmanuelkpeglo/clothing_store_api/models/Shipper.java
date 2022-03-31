@@ -1,4 +1,4 @@
-package models;
+package com.emmanuelkpeglo.clothing_store_api.models;
 
 import lombok.*;
 
@@ -16,8 +16,7 @@ import java.util.List;
 public class Shipper {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "shipperId", nullable = false)
-    private Long shipperId;
+    private Long id;
 
     private String name;
     private int phone;

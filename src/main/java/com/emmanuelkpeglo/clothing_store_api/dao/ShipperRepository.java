@@ -1,6 +1,6 @@
-package dao;
+package com.emmanuelkpeglo.clothing_store_api.dao;
 
-import models.Shipper;
+import com.emmanuelkpeglo.clothing_store_api.models.Shipper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
