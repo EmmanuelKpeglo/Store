@@ -1,6 +1,7 @@
 package com.emmanuelkpeglo.clothing_store_api.services.implementations;
 
 import com.emmanuelkpeglo.clothing_store_api.dao.CustomerRepository;
+import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundException;
 import com.emmanuelkpeglo.clothing_store_api.models.Customer;
 import com.emmanuelkpeglo.clothing_store_api.services.CustomerService;
 import lombok.AllArgsConstructor;
@@ -26,19 +27,19 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id)
-                .get();
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id: " + id + " not found!"));
     }
 
     @Override
     public void removeCustomer(Long id) {
         Customer customer = customerRepository.findById(id)
-                        .get();
+                        .orElseThrow(() -> new ResourceNotFoundException("Customer with id: " + id + " not found!"));
         customerRepository.delete(customer);
     }
     @Override
     public Customer updateCustomer(Long id, Customer customerRequest) {
         Customer customer = customerRepository.findById(id)
-                .get();
+                        .orElseThrow(() -> new ResourceNotFoundException("Customer with id: " + id + " not found!"));
         customer.setAddress(customerRequest.getAddress());
         customer.setCity(customerRequest.getCity());
         customer.setCountry(customerRequest.getCountry());

@@ -1,0 +1,7 @@
+package com.emmanuelkpeglo.clothing_store_api.exceptions;
+
+public class ResourceNotFoundException extends RuntimeException{
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
