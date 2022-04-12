@@ -5,12 +5,14 @@ import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundExceptio
 import com.emmanuelkpeglo.clothing_store_api.models.Customer;
 import com.emmanuelkpeglo.clothing_store_api.services.CustomerService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @AllArgsConstructor
 @Service
+@Primary
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
 

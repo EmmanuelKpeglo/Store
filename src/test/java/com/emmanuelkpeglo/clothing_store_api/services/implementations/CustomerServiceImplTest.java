@@ -3,7 +3,6 @@ package com.emmanuelkpeglo.clothing_store_api.services.implementations;
 import com.emmanuelkpeglo.clothing_store_api.dao.CustomerRepository;
 import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundException;
 import com.emmanuelkpeglo.clothing_store_api.models.Customer;
-import com.emmanuelkpeglo.clothing_store_api.services.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +21,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,7 +60,7 @@ class CustomerServiceImplTest {
         @Test
         @DisplayName("should return an empty list assuming no customer is in the database")
         void shouldReturnAnEmptyList() {
-            when(customerRepository.findAll()).thenReturn(new ArrayList<>());
+            when(customerRepository.findAll()).thenReturn(new ArrayList<Customer>());
 
             List<Customer> customers = customerService.getCustomers();
 

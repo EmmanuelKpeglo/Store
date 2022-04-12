@@ -22,6 +22,7 @@ public class Customer {
     private String address;
     private String city;
     private String postalCode;
+    private String country;
 
     public Customer(Long id, String name, String address, String city, String postalCode, String country) {
         this.id = id;
@@ -29,10 +30,8 @@ public class Customer {
         this.address = address;
         this.city = city;
         this.postalCode = postalCode;
-        Country = country;
+        this.country = country;
     }
-
-    private String Country;
 
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
