@@ -139,7 +139,8 @@ class CustomerServiceImplTest {
             customerRequest.setCity("hobun");
             customerRequest.setAddress("97tyu");
 
-            ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> customerService.updateCustomer(id, customerRequest));
+            ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
+                    () -> customerService.updateCustomer(id, customerRequest));
             assertThat(thrown.getMessage()).isEqualTo("Customer with id: " + id + " not found!");
 
         }
@@ -151,7 +152,7 @@ class CustomerServiceImplTest {
         @Test
         @DisplayName("removes a customer if the customer exists")
         void shouldRemoveCustomerIfExists() {
-            Long id = 2L;
+            Long id = 3L;
             when(customerRepository.findById(id)).thenReturn(Optional.of(customer));
             customerService.removeCustomer(id);
             customerService.removeCustomer(id);

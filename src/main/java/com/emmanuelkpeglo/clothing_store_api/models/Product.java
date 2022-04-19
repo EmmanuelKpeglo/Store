@@ -25,4 +25,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderDetail> orderDetails;
 
+    public Product(Long id, String name, String unit, double price) {
+        this.id = id;
+        this.name = name;
+        this.unit = unit;
+        this.price = price;
+    }
 }
