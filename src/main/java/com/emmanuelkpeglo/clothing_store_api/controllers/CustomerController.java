@@ -54,7 +54,6 @@ public class CustomerController {
     public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
         Customer customerRequest = modelMapper.map(customerDto, Customer.class);
         Customer updatedCustomer = customerService.updateCustomer(id, customerRequest);
-
         CustomerDto updatedCustomerDto = modelMapper.map(updatedCustomer, CustomerDto.class);
 
         return new ResponseEntity<CustomerDto>(updatedCustomerDto, HttpStatus.OK);
@@ -66,5 +65,4 @@ public class CustomerController {
 
         return new ResponseEntity<String>("Customer with id: " + id + " removed!", HttpStatus.OK);
     }
-
 }

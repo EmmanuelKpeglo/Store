@@ -84,9 +84,10 @@ class CustomerControllerTest {
         void shouldUpdateCustomerIfExists() throws Exception{
             long id = 2L;
             CustomerDto customerRequest = modelMapper.map(customers.get(1), CustomerDto.class);
-            Customer updatedCustomer = customers.get(1);
-            updatedCustomer.setName("onini");
-            updatedCustomer.setCountry("timbuktu");
+            customerRequest.setName("onini");
+            customerRequest.setCountry("timbuktu");
+            Customer updatedCustomer = modelMapper.map(customerRequest, Customer.class);
+
             when(customerService.updateCustomer(anyLong(), any(Customer.class))).thenReturn(updatedCustomer);
 
             mockMvc.perform(
@@ -110,7 +111,7 @@ class CustomerControllerTest {
                     put(customer_base_url + "/" + id)
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(customer)))
+                            .content(objectMapper.writeValueAsString(customerDto)))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.message", equalTo("Customer with id: " + id + " not found!")));
 
@@ -209,7 +210,8 @@ class CustomerControllerTest {
                             delete(customer_base_url + "/" + id)
                                     .accept(MediaType.APPLICATION_JSON)
                                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message", equalTo("Customer with id: " + id + " not found!")));
         }
     }
 }

@@ -51,8 +51,8 @@ class ProductServiceImplTest {
     void shouldAddAProduct() {
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        assertThat(productService.createProduct(product)).returns(3L, Product::getId);
-        assertThat(productService.createProduct(product)).returns(4.5, Product::getPrice);
+        assertThat(productService.addProduct(product)).returns(3L, Product::getId);
+        assertThat(productService.addProduct(product)).returns(4.5, Product::getPrice);
     }
 
     @Nested
