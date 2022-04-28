@@ -111,18 +111,18 @@ class CustomerServiceImplTest {
         @DisplayName("updates a customer given the customer exists")
         void shouldUpdateCustomerIfExists() {
             Long id = 1L;
-            when(customerRepository.findById(id)).thenReturn(Optional.of(customers.get(0)));
+            when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customers.get(0)));
             when(customerRepository.save(any(Customer.class))).thenReturn(customers.get(0));
 
-            Customer customerRequest = new Customer();
-            customerRequest.setPostalCode("565665");
-            customerRequest.setName("wario");
-            customerRequest.setCountry("kuvikiland");
-            customerRequest.setCity("hobun");
-            customerRequest.setAddress("97tyu");
+            Customer customerUpdate = new Customer();
+            customerUpdate.setPostalCode("565665");
+            customerUpdate.setName("wario");
+            customerUpdate.setCountry("kuvikiland");
+            customerUpdate.setCity("hobun");
+            customerUpdate.setAddress("97tyu");
 
-            assertThat(customerService.updateCustomer(id, customerRequest)).returns(id, Customer::getId);
-            assertThat(customerService.updateCustomer(id, customerRequest)).returns("wario", Customer::getName);
+            assertThat(customerService.updateCustomer(id, customerUpdate)).returns(id, Customer::getId);
+            assertThat(customerService.updateCustomer(id, customerUpdate)).returns("wario", Customer::getName);
         }
 
         @Test
@@ -167,7 +167,8 @@ class CustomerServiceImplTest {
             Long id = 9L;
             when(customerRepository.findById(id)).thenReturn(Optional.empty());
 
-            ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> customerService.removeCustomer(id));
+            ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
+                    () -> customerService.removeCustomer(id));
             assertThat(thrown.getMessage()).isEqualTo("Customer with id: " + id + " not found!");
         }
     }

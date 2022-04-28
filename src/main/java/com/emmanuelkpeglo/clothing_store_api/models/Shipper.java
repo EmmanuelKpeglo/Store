@@ -19,7 +19,13 @@ public class Shipper {
     private Long id;
 
     private String name;
-    private int phone;
+    private String phone;
+
+    public Shipper(Long id, String name, String phone) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+    }
 
     @OneToMany(mappedBy = "shipper")
     private List<Order> orders;

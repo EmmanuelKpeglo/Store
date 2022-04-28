@@ -31,7 +31,6 @@ class ProductServiceImplTest {
     @Mock
     private ProductRepository productRepository;
 
-
     @Autowired
     @InjectMocks
     private ProductServiceImpl productService;
@@ -65,12 +64,12 @@ class ProductServiceImplTest {
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(productList.get(1)));
             when(productRepository.save(any(Product.class))).thenReturn(productList.get(1));
 
-            Product product = new Product();
-            product.setUnit("1 pair");
-            product.setPrice(2.5);
+            Product productUpdate = new Product();
+            productUpdate.setUnit("1 pair");
+            productUpdate.setPrice(2.5);
 
-            assertThat(productService.updateProduct(id, product)).returns(id, Product::getId);
-            assertThat(productService.updateProduct(id, product)).returns("1 pair", Product::getUnit);
+            assertThat(productService.updateProduct(id, productUpdate)).returns(id, Product::getId);
+            assertThat(productService.updateProduct(id, productUpdate)).returns("1 pair", Product::getUnit);
         }
 
         @Test
@@ -161,7 +160,7 @@ class ProductServiceImplTest {
             when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> productService.getProductById(id));
+                    () -> productService.removeProduct(id));
 
             assertThat(thrown.getMessage()).isEqualTo("Product with id: " + id + " not found!");
         }
