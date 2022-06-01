@@ -1,6 +1,7 @@
 package com.emmanuelkpeglo.clothing_store_api.services.implementations;
 
 import com.emmanuelkpeglo.clothing_store_api.dao.ProductRepository;
+import com.emmanuelkpeglo.clothing_store_api.dao.generic.GenericRepository;
 import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundException;
 import com.emmanuelkpeglo.clothing_store_api.models.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +30,11 @@ class ProductServiceImplTest {
     Product product;
 
     @Mock
-    private ProductRepository productRepository;
+    GenericRepository<Product> productRepository;
 
     @Autowired
     @InjectMocks
-    private ProductServiceImpl productService;
+    ProductServiceImpl productService;
 
     @BeforeEach
     void setUp() {
@@ -50,8 +51,8 @@ class ProductServiceImplTest {
     void shouldAddAProduct() {
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        assertThat(productService.addProduct(product)).returns(3L, Product::getId);
-        assertThat(productService.addProduct(product)).returns(4.5, Product::getPrice);
+        assertThat(productService.save(product)).returns(3L, Product::getId);
+        assertThat(productService.save(product)).returns(4.5, Product::getPrice);
     }
 
     @Nested
@@ -68,8 +69,8 @@ class ProductServiceImplTest {
             productUpdate.setUnit("1 pair");
             productUpdate.setPrice(2.5);
 
-            assertThat(productService.updateProduct(id, productUpdate)).returns(id, Product::getId);
-            assertThat(productService.updateProduct(id, productUpdate)).returns("1 pair", Product::getUnit);
+            assertThat(productService.update(id, productUpdate)).returns(id, Product::getId);
+            assertThat(productService.update(id, productUpdate)).returns("1 pair", Product::getUnit);
         }
 
         @Test
@@ -83,8 +84,8 @@ class ProductServiceImplTest {
             product.setPrice(2.5);
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> productService.updateProduct(id, product));
-            assertThat(thrown.getMessage()).isEqualTo("Product with id: " + id + " not found!");
+                    () -> productService.update(id, product));
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
         }
     }
 
@@ -95,7 +96,7 @@ class ProductServiceImplTest {
         @DisplayName("returns an empty list given that there's no product")
         void shouldReturnAnEmptyListOfProducts() {
             when(productRepository.findAll()).thenReturn(new ArrayList<Product>());
-            List<Product> products = productService.getProducts();
+            List<Product> products = productService.findAll();
 
             assertThat(products.size()).isZero();
         }
@@ -104,7 +105,7 @@ class ProductServiceImplTest {
         @DisplayName("returns a list of two products")
         void shouldReturnAListOfTwoProducts() {
             when(productRepository.findAll()).thenReturn(productList);
-            List<Product> products = productService.getProducts();
+            List<Product> products = productService.findAll();
 
             assertThat(products.size()).isEqualTo(2);
             assertThat(products).isEqualTo(productList);
@@ -121,8 +122,8 @@ class ProductServiceImplTest {
             long id = 1;
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(productList.get(0)));
 
-            assertThat(productService.getProductById(id)).isEqualTo(productList.get(0));
-            assertThat(productService.getProductById(id)).returns(8.7, Product::getPrice);
+            assertThat(productService.findById(id)).isEqualTo(productList.get(0));
+            assertThat(productService.findById(id)).returns(8.7, Product::getPrice);
         }
 
         @Test
@@ -132,9 +133,9 @@ class ProductServiceImplTest {
             when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> productService.getProductById(id));
+                    () -> productService.findById(id));
 
-            assertThat(thrown.getMessage()).isEqualTo("Product with id: " + id + " not found!");
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
         }
     }
 
@@ -146,9 +147,9 @@ class ProductServiceImplTest {
         void shouldRemoveProductIfExists() {
             long id = 3;
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-            productService.removeProduct(id);
-            productService.removeProduct(id);
-            productService.removeProduct(id);
+            productService.delete(id);
+            productService.delete(id);
+            productService.delete(id);
 
             verify(productRepository, times(3)).delete(product);
         }
@@ -160,9 +161,9 @@ class ProductServiceImplTest {
             when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> productService.removeProduct(id));
+                    () -> productService.delete(id));
 
-            assertThat(thrown.getMessage()).isEqualTo("Product with id: " + id + " not found!");
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
         }
     }
 }

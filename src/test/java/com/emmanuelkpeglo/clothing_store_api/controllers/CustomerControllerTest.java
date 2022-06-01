@@ -4,6 +4,7 @@ import com.emmanuelkpeglo.clothing_store_api.dtos.CustomerDto;
 import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundException;
 import com.emmanuelkpeglo.clothing_store_api.models.Customer;
 import com.emmanuelkpeglo.clothing_store_api.services.CustomerService;
+import com.emmanuelkpeglo.clothing_store_api.services.generic.GenericService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ class CustomerControllerTest {
     String customer_base_url;
 
     @MockBean
-    private CustomerService customerService;
+    private GenericService<Customer> customerService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -65,10 +66,10 @@ class CustomerControllerTest {
     @Test
     @DisplayName("creates a new customer")
     void shouldCreateACustomer() throws Exception{
-        when(customerService.createCustomer(any(Customer.class))).thenReturn(customer);
+        when(customerService.save(any(Customer.class))).thenReturn(customer);
 
         mockMvc.perform(
-                post(customer_base_url + "/create")
+                post(customer_base_url + "/add")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerDto)))
@@ -88,7 +89,7 @@ class CustomerControllerTest {
             customerRequest.setCountry("timbuktu");
             Customer updatedCustomer = modelMapper.map(customerRequest, Customer.class);
 
-            when(customerService.updateCustomer(anyLong(), any(Customer.class))).thenReturn(updatedCustomer);
+            when(customerService.update(anyLong(), any(Customer.class))).thenReturn(updatedCustomer);
 
             mockMvc.perform(
                     put(customer_base_url + "/" + id)
@@ -105,7 +106,7 @@ class CustomerControllerTest {
         @DisplayName("throws an exception if customer is not found")
         void shouldThrowAnExceptionIfCustomerIsNotFound() throws Exception{
             long id = 6L;
-            when(customerService.updateCustomer(anyLong(), any(Customer.class)))
+            when(customerService.update(anyLong(), any(Customer.class)))
                     .thenThrow(new ResourceNotFoundException("Customer with id: " + id + " not found!"));
             mockMvc.perform(
                     put(customer_base_url + "/" + id)
@@ -124,7 +125,7 @@ class CustomerControllerTest {
         @Test
         @DisplayName("returns two customers")
         void shouldGetTwoCustomers() throws Exception{
-            when(customerService.getCustomers()).thenReturn(customers);
+            when(customerService.findAll()).thenReturn(customers);
 
             mockMvc.perform(
                     get(customer_base_url)
@@ -138,7 +139,7 @@ class CustomerControllerTest {
         @Test
         @DisplayName("returns an empty list assuming there are no customers in the database")
         void shouldReturnAnEmptyListOfCustomers() throws Exception {
-            when(customerService.getCustomers()).thenReturn(new ArrayList<Customer>());
+            when(customerService.findAll()).thenReturn(new ArrayList<Customer>());
 
             mockMvc.perform(
                     get(customer_base_url)
@@ -156,7 +157,7 @@ class CustomerControllerTest {
         @DisplayName("returns a customer if the customer exists")
         void shouldGetCustomerIfExists() throws Exception{
             long id = 2L;
-            when(customerService.getCustomerById(anyLong())).thenReturn(customers.get(1));
+            when(customerService.findById(anyLong())).thenReturn(customers.get(1));
 
             mockMvc.perform(
                     get(customer_base_url + "/" + id)
@@ -171,7 +172,7 @@ class CustomerControllerTest {
         @DisplayName("throws an exception assuming customer does not exist")
         void shouldThrowAnExceptionIfCustomerDoesNotExist() throws Exception {
             long id = 6L;
-            when(customerService.getCustomerById(anyLong()))
+            when(customerService.findById(anyLong()))
                     .thenThrow(new ResourceNotFoundException("Customer with id: " + id + " not found!"));
 
             mockMvc.perform(
@@ -190,7 +191,7 @@ class CustomerControllerTest {
         @DisplayName("deletes a customer assuming customer exists")
         void shouldDeleteCustomerIfExists() throws Exception{
             long id = 1;
-            doNothing().when(customerService).removeCustomer(id);
+            doNothing().when(customerService).delete(id);
 
             mockMvc.perform(
                     delete(customer_base_url + "/" + id)
@@ -204,7 +205,7 @@ class CustomerControllerTest {
         void shouldThrowAnExceptionIfCustomerDoesNotExist () throws Exception {
             long id = 1;
             doThrow(new ResourceNotFoundException("Customer with id: " + id + " not found!"))
-                    .when(customerService).removeCustomer(id);
+                    .when(customerService).delete(id);
 
             mockMvc.perform(
                             delete(customer_base_url + "/" + id)

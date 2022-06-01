@@ -1,6 +1,7 @@
 package com.emmanuelkpeglo.clothing_store_api.services.implementations;
 
 import com.emmanuelkpeglo.clothing_store_api.dao.CustomerRepository;
+import com.emmanuelkpeglo.clothing_store_api.dao.generic.GenericRepository;
 import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundException;
 import com.emmanuelkpeglo.clothing_store_api.models.Customer;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +30,11 @@ class CustomerServiceImplTest {
     Customer customer;
 
     @Mock
-    private CustomerRepository customerRepository;
+    GenericRepository<Customer> customerRepository;
 
     @Autowired
     @InjectMocks
-    private CustomerServiceImpl customerService;
+    CustomerServiceImpl customerService;
 
     @BeforeEach
     void setUp() {
@@ -50,8 +51,8 @@ class CustomerServiceImplTest {
     void createCustomer() {
         when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
-        assertThat(customerService.createCustomer(customer)).returns(3L, Customer::getId);
-        assertThat(customerService.createCustomer(customer)).returns("zonda", Customer::getName);
+        assertThat(customerService.save(customer)).returns(3L, Customer::getId);
+        assertThat(customerService.save(customer)).returns("zonda", Customer::getName);
     }
 
     @Nested
@@ -62,7 +63,7 @@ class CustomerServiceImplTest {
         void shouldReturnAnEmptyList() {
             when(customerRepository.findAll()).thenReturn(new ArrayList<Customer>());
 
-            List<Customer> customers = customerService.getCustomers();
+            List<Customer> customers = customerService.findAll();
 
             assertThat(customers.size()).isZero();
         }
@@ -72,7 +73,7 @@ class CustomerServiceImplTest {
         void shouldReturnAListOfCustomers() {
             when(customerRepository.findAll()).thenReturn(customers);
 
-            List<Customer> AllCustomers = customerService.getCustomers();
+            List<Customer> AllCustomers = customerService.findAll();
 
             assertThat(AllCustomers.size()).isEqualTo(2);
             assertThat(AllCustomers).isEqualTo(customers);
@@ -89,8 +90,8 @@ class CustomerServiceImplTest {
             Long id = 3L;
             when(customerRepository.findById(id)).thenReturn(Optional.of(customer));
 
-            assertThat(customerService.getCustomerById(id)).isEqualTo(customer);
-            assertThat(customerService.getCustomerById(id)).returns(id, Customer::getId);
+            assertThat(customerService.findById(id)).isEqualTo(customer);
+            assertThat(customerService.findById(id)).returns(id, Customer::getId);
         }
 
         @Test
@@ -99,8 +100,8 @@ class CustomerServiceImplTest {
             Long id = 9L;
             when(customerRepository.findById(id)).thenReturn(Optional.empty());
 
-            ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> customerService.getCustomerById(id));
-            assertThat(thrown.getMessage()).isEqualTo("Customer with id: " + id + " not found!");
+            ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> customerService.findById(id));
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
         }
     }
 
@@ -121,8 +122,8 @@ class CustomerServiceImplTest {
             customerUpdate.setCity("hobun");
             customerUpdate.setAddress("97tyu");
 
-            assertThat(customerService.updateCustomer(id, customerUpdate)).returns(id, Customer::getId);
-            assertThat(customerService.updateCustomer(id, customerUpdate)).returns("wario", Customer::getName);
+            assertThat(customerService.update(id, customerUpdate)).returns(id, Customer::getId);
+            assertThat(customerService.update(id, customerUpdate)).returns("wario", Customer::getName);
         }
 
         @Test
@@ -140,8 +141,8 @@ class CustomerServiceImplTest {
             customerRequest.setAddress("97tyu");
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> customerService.updateCustomer(id, customerRequest));
-            assertThat(thrown.getMessage()).isEqualTo("Customer with id: " + id + " not found!");
+                    () -> customerService.update(id, customerRequest));
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
 
         }
     }
@@ -154,9 +155,9 @@ class CustomerServiceImplTest {
         void shouldRemoveCustomerIfExists() {
             Long id = 3L;
             when(customerRepository.findById(id)).thenReturn(Optional.of(customer));
-            customerService.removeCustomer(id);
-            customerService.removeCustomer(id);
-            customerService.removeCustomer(id);
+            customerService.delete(id);
+            customerService.delete(id);
+            customerService.delete(id);
 
             verify(customerRepository, times(3)).delete(customer);
         }
@@ -168,8 +169,8 @@ class CustomerServiceImplTest {
             when(customerRepository.findById(id)).thenReturn(Optional.empty());
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> customerService.removeCustomer(id));
-            assertThat(thrown.getMessage()).isEqualTo("Customer with id: " + id + " not found!");
+                    () -> customerService.delete(id));
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
         }
     }
 }

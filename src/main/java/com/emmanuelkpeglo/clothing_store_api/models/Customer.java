@@ -1,5 +1,6 @@
 package com.emmanuelkpeglo.clothing_store_api.models;
 
+import com.emmanuelkpeglo.clothing_store_api.models.base.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,10 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "customer")
-public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Customer extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
 
     private String name;
     private String address;
@@ -25,7 +26,7 @@ public class Customer {
     private String country;
 
     public Customer(Long id, String name, String address, String city, String postalCode, String country) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.address = address;
         this.city = city;

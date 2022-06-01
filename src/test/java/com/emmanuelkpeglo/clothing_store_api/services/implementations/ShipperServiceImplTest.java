@@ -1,6 +1,7 @@
 package com.emmanuelkpeglo.clothing_store_api.services.implementations;
 
 import com.emmanuelkpeglo.clothing_store_api.dao.ShipperRepository;
+import com.emmanuelkpeglo.clothing_store_api.dao.generic.GenericRepository;
 import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundException;
 import com.emmanuelkpeglo.clothing_store_api.models.Shipper;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,7 @@ class ShipperServiceImplTest {
     Shipper shipper;
 
     @Mock
-    ShipperRepository shipperRepository;
+    GenericRepository<Shipper> shipperRepository;
 
     @Autowired
     @InjectMocks
@@ -50,8 +51,8 @@ class ShipperServiceImplTest {
     void createShipper() {
         when(shipperRepository.save(any(Shipper.class))).thenReturn(shipper);
 
-        assertThat(shipperService.createShipper(shipper)).returns("abu", Shipper::getName);
-        assertThat(shipperService.createShipper(shipper)).returns(3L, Shipper::getId);
+        assertThat(shipperService.save(shipper)).returns("abu", Shipper::getName);
+        assertThat(shipperService.save(shipper)).returns(3L, Shipper::getId);
     }
 
     @Nested
@@ -68,8 +69,8 @@ class ShipperServiceImplTest {
             shipperUpdate.setName("lalo");
             shipperUpdate.setPhone("123");
 
-            assertThat(shipperService.updateShipper(id, shipperUpdate)).returns(id, Shipper::getId);
-            assertThat(shipperService.updateShipper(id, shipperUpdate)).returns("lalo", Shipper::getName);
+            assertThat(shipperService.update(id, shipperUpdate)).returns(id, Shipper::getId);
+            assertThat(shipperService.update(id, shipperUpdate)).returns("lalo", Shipper::getName);
         }
 
         @Test
@@ -83,9 +84,9 @@ class ShipperServiceImplTest {
             shipperUpdate.setPhone("123");
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> shipperService.updateShipper(id, shipperUpdate));
+                    () -> shipperService.update(id, shipperUpdate));
 
-            assertThat(thrown.getMessage()).isEqualTo("Shipper with id: " + id + " not found!");
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
         }
 
     }
@@ -97,7 +98,7 @@ class ShipperServiceImplTest {
         @DisplayName("returns no shipper")
         void shouldReturnZeroShippers() {
             when(shipperRepository.findAll()).thenReturn(new ArrayList<Shipper>());
-            List<Shipper> shippers = shipperService.getShippers();
+            List<Shipper> shippers = shipperService.findAll();
 
             assertThat(shippers.size()).isZero();
         }
@@ -106,7 +107,7 @@ class ShipperServiceImplTest {
         @DisplayName("returns a list of 2 shippers")
         void shouldReturnTwoShippers() {
             when(shipperRepository.findAll()).thenReturn(shipperList);
-            List<Shipper> shippers = shipperService.getShippers();
+            List<Shipper> shippers = shipperService.findAll();
 
             assertThat(shippers.size()).isEqualTo(2);
             assertThat(shippers.get(0).getName()).isEqualTo("lee");
@@ -122,8 +123,8 @@ class ShipperServiceImplTest {
             long id = 2;
             when(shipperRepository.findById(anyLong())).thenReturn(Optional.of(shipperList.get(1)));
 
-            assertThat(shipperService.getShipperById(id)).returns("yoshi", Shipper::getName);
-            assertThat(shipperService.getShipperById(id)).returns(2L, Shipper::getId);
+            assertThat(shipperService.findById(id)).returns("yoshi", Shipper::getName);
+            assertThat(shipperService.findById(id)).returns(2L, Shipper::getId);
         }
 
         @Test
@@ -133,9 +134,9 @@ class ShipperServiceImplTest {
             when(shipperRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> shipperService.getShipperById(id));
+                    () -> shipperService.findById(id));
 
-            assertThat(thrown.getMessage()).isEqualTo("Shipper with id: " + id + " not found!");
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
         }
     }
 
@@ -147,9 +148,9 @@ class ShipperServiceImplTest {
         void shouldRemoveShipper() {
             long id = 3;
             when(shipperRepository.findById(anyLong())).thenReturn(Optional.of(shipper));
-            shipperService.removeShipper(id);
-            shipperService.removeShipper(id);
-            shipperService.removeShipper(id);
+            shipperService.delete(id);
+            shipperService.delete(id);
+            shipperService.delete(id);
 
             verify(shipperRepository, times(3)).delete(shipper);
         }
@@ -161,9 +162,9 @@ class ShipperServiceImplTest {
             when(shipperRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,
-                    () -> shipperService.removeShipper(id));
+                    () -> shipperService.delete(id));
 
-            assertThat(thrown.getMessage()).isEqualTo("Shipper with id: " + id + " not found!");
+            assertThat(thrown.getMessage()).isEqualTo("Resource with id: " + id + " not found!");
 
         }
     }
