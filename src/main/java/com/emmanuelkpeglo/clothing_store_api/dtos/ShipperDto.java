@@ -6,5 +6,5 @@ import lombok.Data;
 public class ShipperDto {
     private Long id;
     private String name;
-    private int phone;
+    private String phone;
 }

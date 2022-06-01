@@ -4,6 +4,7 @@ import com.emmanuelkpeglo.clothing_store_api.dtos.ProductDto;
 import com.emmanuelkpeglo.clothing_store_api.exceptions.ResourceNotFoundException;
 import com.emmanuelkpeglo.clothing_store_api.models.Product;
 import com.emmanuelkpeglo.clothing_store_api.services.ProductService;
+import com.emmanuelkpeglo.clothing_store_api.services.generic.GenericService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +37,7 @@ class ProductControllerTest {
     String product_base_url;
 
     @MockBean
-    private ProductService productService;
+    private GenericService<Product> productService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -64,7 +65,7 @@ class ProductControllerTest {
         @Test
         @DisplayName("returns two products")
         void shouldGetProducts() throws Exception {
-            when(productService.getProducts()).thenReturn(productList);
+            when(productService.findAll()).thenReturn(productList);
 
             mockMvc.perform(
                     get(product_base_url)
@@ -79,7 +80,7 @@ class ProductControllerTest {
         @Test
         @DisplayName("returns an empty list of products")
         void shouldGetZeroProducts() throws Exception {
-            when(productService.getProducts()).thenReturn(new ArrayList<Product>());
+            when(productService.findAll()).thenReturn(new ArrayList<Product>());
 
             mockMvc.perform(
                     get(product_base_url)
@@ -98,7 +99,7 @@ class ProductControllerTest {
         @DisplayName("returns a product if exists")
         void shouldGetProductIfExists() throws Exception {
             long id = 2;
-            when(productService.getProductById(anyLong())).thenReturn(productList.get(1));
+            when(productService.findById(anyLong())).thenReturn(productList.get(1));
 
             mockMvc.perform(
                     get(product_base_url + "/" + id)
@@ -114,7 +115,7 @@ class ProductControllerTest {
         @DisplayName("throws an exception if product does not exist")
         void shouldThrowAnException() throws Exception {
             long id = 4;
-            when(productService.getProductById(anyLong()))
+            when(productService.findById(anyLong()))
                     .thenThrow(new ResourceNotFoundException("Product with id: " + id + " not found!"));
 
             mockMvc.perform(
@@ -130,7 +131,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("adds a product")
     void shouldAddAProduct() throws Exception {
-        when(productService.addProduct(any(Product.class))).thenReturn(product);
+        when(productService.save(any(Product.class))).thenReturn(product);
 
         mockMvc.perform(
                 post(product_base_url + "/add")
@@ -153,7 +154,7 @@ class ProductControllerTest {
             oldProductDto.setUnit("6 pieces");
             oldProductDto.setPrice(21.9);
             Product updatedProduct = modelMapper.map(oldProductDto, Product.class);
-            when(productService.updateProduct(anyLong(), any(Product.class))).thenReturn(updatedProduct);
+            when(productService.update(anyLong(), any(Product.class))).thenReturn(updatedProduct);
 
             mockMvc.perform(
                     put(product_base_url + "/" + id)
@@ -170,7 +171,7 @@ class ProductControllerTest {
         @DisplayName("throws an exception given that product does not exist")
         void shouldThrowAnException() throws Exception {
             long id = 5;
-            when(productService.updateProduct(anyLong(), any(Product.class)))
+            when(productService.update(anyLong(), any(Product.class)))
                     .thenThrow(new ResourceNotFoundException("Product with id: " + id + " not found!"));
 
             mockMvc.perform(
@@ -191,7 +192,7 @@ class ProductControllerTest {
         @DisplayName("removes product given it exists")
         void shouldRemoveProduct() throws Exception {
             long id = 2;
-            doNothing().when(productService).removeProduct(anyLong());
+            doNothing().when(productService).delete(anyLong());
 
             mockMvc.perform(
                     delete(product_base_url + "/" + id)
@@ -206,7 +207,7 @@ class ProductControllerTest {
         void shouldThrowAnException() throws Exception {
             long id = 4;
             doThrow(new ResourceNotFoundException("Product with id: " + id + " not found!"))
-                    .when(productService).removeProduct(anyLong());
+                    .when(productService).delete(anyLong());
 
             mockMvc.perform(
                     delete(product_base_url + "/" + id)

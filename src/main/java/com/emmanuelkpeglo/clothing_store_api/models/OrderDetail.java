@@ -1,5 +1,6 @@
 package com.emmanuelkpeglo.clothing_store_api.models;
 
+import com.emmanuelkpeglo.clothing_store_api.models.base.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,10 +13,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "order_detail")
-public class OrderDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class OrderDetail extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
     private int quantity;
 
     @ManyToOne(cascade = CascadeType.ALL)
