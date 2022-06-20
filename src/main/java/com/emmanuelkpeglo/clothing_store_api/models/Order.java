@@ -25,11 +25,6 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shipper_id", referencedColumnName = "id")
-    private Shipper shipper;
-
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
-
 }
