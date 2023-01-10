@@ -34,4 +34,8 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
+
+    public Order(Customer customer) {
+        this.customer = customer;
+    }
 }

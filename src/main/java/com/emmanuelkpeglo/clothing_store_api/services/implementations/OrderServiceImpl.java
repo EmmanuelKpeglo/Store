@@ -5,9 +5,13 @@ import com.emmanuelkpeglo.clothing_store_api.models.Order;
 import com.emmanuelkpeglo.clothing_store_api.services.OrderService;
 import com.emmanuelkpeglo.clothing_store_api.services.generic.implementations.GenericServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Primary
+@Service
 public class OrderServiceImpl extends GenericServiceImpl<Order> implements OrderService {
 
     @Override
