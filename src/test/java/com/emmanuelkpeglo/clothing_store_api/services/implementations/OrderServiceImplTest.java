@@ -69,7 +69,7 @@ class OrderServiceImplTest {
     void shouldAddAOrder() {
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        assertThat(orderService.save(order)).returns(3L, BaseEntity::getId);
+        assertThat(orderService.save(order)).returns(3L, Order::getId);
         assertThat(orderService.save(order)).returns(9L, anOrder -> anOrder.getCustomer().getId());
     }
 
